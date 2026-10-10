@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  --primary-teal: #0f766e;
+  --primary-teal-light: #14b8a6;
+  --primary-teal-dark: #115e59;
+  --primary-emerald: #059669;
+  --secondary-coral: #ea580c;
+  --secondary-orange: #f97316;
+  --accent-turquoise: #06b6d4;
+  --accent-champagne: #fef3c7;
+  --bg-ivory: #faf9f6;
+  --bg-mint: #f0fdf4;
+  --text-forest: #064e3b;
+  --text-charcoal: #1e293b;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Mukta', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-ivory);
+    color: var(--text-charcoal);
+  }
+}
+
+.font-marathi {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Continuous looping announcement strip marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+    transform: none;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .animate-float, .animate-float-reverse {
+    animation: none !important;
+  }
+}
+
+/* Subtle 3D floating effect */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes float-reverse-gentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(7px) rotate(-1.5deg);
+  }
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse-gentle 5s ease-in-out infinite;
+}
+

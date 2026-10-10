@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email != null && request.auth.token.email == 'swarapan7@gmail.com')
+      );
+    }
+
+    function isValidRegistration(data) {
+      return data.keys().hasAll(['registrationId', 'fullName', 'phone', 'district', 'city', 'centerType', 'paymentStatus']) &&
+        data.registrationId is string && data.registrationId.size() <= 50 &&
+        data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 150 &&
+        data.phone is string && data.phone.size() == 10 &&
+        data.district is string && data.district.size() <= 100 &&
+        data.city is string && data.city.size() <= 100 &&
+        data.centerType is string && data.centerType.size() <= 100 &&
+        data.paymentStatus in ['initiated', 'verified', 'cancelled', 'pending'];
+    }
+
+    // Public event settings - public can read single doc, only admin can write
+    match /settings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if false;
+      allow create, update, delete: if isAdmin() && isValidId(settingId);
+    }
+
+    // Registrations - public can create, but cannot list or read other participants' PII
+    match /registrations/{registrationId} {
+      allow get: if isAdmin() && isValidId(registrationId);
+      allow list: if isAdmin();
+      allow create: if isValidId(registrationId) &&
+        isValidRegistration(request.resource.data) &&
+        request.resource.data.paymentStatus in ['initiated', 'pending'];
+      allow update, delete: if isAdmin() && isValidId(registrationId);
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow get, list, create, update, delete: if isAdmin() && isValidId(adminId);
+    }
+  }
+}

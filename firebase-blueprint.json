@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "eventSettings": {
+      "title": "Event Settings",
+      "description": "Configuration and editable content for Swara Udyog Samuh E-Seva Training landing page",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "dates": { "type": "string", "maxLength": 100 },
+        "days": { "type": "string", "maxLength": 100 },
+        "time": { "type": "string", "maxLength": 100 },
+        "venue": { "type": "string", "maxLength": 200 },
+        "address": { "type": "string", "maxLength": 500 },
+        "officeAddress": { "type": "string", "maxLength": 500 },
+        "totalFee": { "type": "number" },
+        "bookingFee": { "type": "number" },
+        "remainingFee": { "type": "number" },
+        "razorpayUrl": { "type": "string", "maxLength": 500 },
+        "registrationOpen": { "type": "boolean" },
+        "maxSeats": { "type": "number" },
+        "heroImageUrl": { "type": "string", "maxLength": 2000 },
+        "logoUrl": { "type": "string", "maxLength": 2000 },
+        "trainerImageUrl": { "type": "string", "maxLength": 2000 },
+        "trainerName": { "type": "string", "maxLength": 100 },
+        "trainerBio": { "type": "string", "maxLength": 1000 },
+        "founderName": { "type": "string", "maxLength": 100 },
+        "founderNameMr": { "type": "string", "maxLength": 100 },
+        "founderDesignation": { "type": "string", "maxLength": 100 },
+        "founderOrganization": { "type": "string", "maxLength": 200 },
+        "founderExperienceYears": { "type": "string", "maxLength": 50 },
+        "founderBio": { "type": "string", "maxLength": 1500 },
+        "founderImageUrl": { "type": "string", "maxLength": 2000 },
+        "founderImagePosition": { "type": "string", "maxLength": 50 },
+        "founderImageScale": { "type": "number" },
+        "contactPhone": { "type": "string", "maxLength": 20 },
+        "whatsappNumber": { "type": "string", "maxLength": 20 },
+        "marathiHeadline": { "type": "string", "maxLength": 300 },
+        "marathiSubheadline": { "type": "string", "maxLength": 600 }
+      },
+      "required": ["title", "dates", "venue", "bookingFee", "totalFee", "razorpayUrl"]
+    },
+    "registration": {
+      "title": "Registration",
+      "description": "Participant registration record for the training event",
+      "type": "object",
+      "properties": {
+        "registrationId": { "type": "string", "maxLength": 50, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "fullName": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 15, "pattern": "^[0-9]{10}$" },
+        "district": { "type": "string", "maxLength": 100 },
+        "city": { "type": "string", "maxLength": 100 },
+        "businessName": { "type": "string", "maxLength": 200 },
+        "centerType": { "type": "string", "maxLength": 100 },
+        "paymentStatus": { "type": "string", "enum": ["initiated", "verified", "cancelled", "pending"] },
+        "transactionRef": { "type": "string", "maxLength": 100 },
+        "adminNotes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["registrationId", "fullName", "phone", "district", "city", "centerType", "paymentStatus"]
+    },
+    "adminUser": {
+      "title": "Admin User",
+      "description": "Authorized administrator profiles with access to manage settings and registrations",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 200 },
+        "role": { "type": "string", "enum": ["superadmin", "admin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": "eventSettings",
+      "description": "Singleton configuration document containing all landing page content and event details"
+    },
+    "/registrations/{registrationId}": {
+      "schema": "registration",
+      "description": "Participant registrations, writable upon public registration and manageable by admins"
+    },
+    "/admins/{adminId}": {
+      "schema": "adminUser",
+      "description": "Whitelisted administrator accounts with full dashboard privileges"
+    }
+  }
+}
